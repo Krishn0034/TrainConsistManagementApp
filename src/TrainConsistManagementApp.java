@@ -1,31 +1,56 @@
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class TrainConsistManagementApp {
 
-    public static void main(String[] args) {
+    // Reusing Bogie model from UC7
+    static class Bogie {
+        String name;
+        int capacity;
 
-        System.out.println("==========================================");
-        System.out.println(" UC6 - Map Bogie to Capacity (HashMap) ");
-        System.out.println("==========================================\n");
-
-        // HashMap stores data in key -> value format
-        // Key: Bogie Name (String), Value: Capacity (Integer)
-        Map<String, Integer> capacityMap = new HashMap<>();
-
-        // ---- Insert bogie capacities ----
-        capacityMap.put("First Class", 24);
-        capacityMap.put("Cargo", 120);
-        capacityMap.put("Sleeper", 72);
-        capacityMap.put("AC Chair", 56);
-
-        System.out.println("Bogie Capacity Details:");
-
-        // Iterate through the map entries using entrySet()
-        for (Map.Entry<String, Integer> entry : capacityMap.entrySet()) {
-            System.out.println(entry.getKey() + " -> " + entry.getValue());
+        Bogie(String name, int capacity) {
+            this.name = name;
+            this.capacity = capacity;
         }
 
-        System.out.println("\nUC6 bogie-capacity mapping completed...");
+        @Override
+        public String toString() {
+            return name + " -> " + capacity;
+        }
+    }
+
+    public static void main(String[] args) {
+        System.out.println("==========================================");
+        System.out.println(" UC8 - Filter Passenger Bogies Using Streams ");
+        System.out.println("==========================================\n");
+
+        // 1. Create list of passenger bogies (same as UC7)
+        List<Bogie> bogies = new ArrayList<>();
+        bogies.add(new Bogie("Sleeper", 72));
+        bogies.add(new Bogie("AC Chair", 56));
+        bogies.add(new Bogie("First Class", 24));
+        bogies.add(new Bogie("General", 90));
+
+        System.out.println("All Bogies:");
+        bogies.forEach(System.out::println);
+
+        // 2. Apply Stream API to filter bogies with capacity > 60
+        List<Bogie> filteredBogies = bogies.stream()
+                .filter(b -> b.capacity > 60)
+                .collect(Collectors.toList());
+
+        // 3. Display the filtered results
+        System.out.println("\nFiltered Bogies (Capacity > 60):");
+        filteredBogies.forEach(System.out::println);
+
+        System.out.println("\nUC8 filtering completed...");
+    }
+
+    // Helper method for JUnit tests to perform filtering
+    public static List<Bogie> filterBogies(List<Bogie> list, int threshold) {
+        return list.stream()
+                .filter(b -> b.capacity > threshold)
+                .collect(Collectors.toList());
     }
 }
