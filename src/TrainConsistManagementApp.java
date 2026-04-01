@@ -1,7 +1,5 @@
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public class TrainConsistManagementApp {
 
@@ -15,45 +13,40 @@ public class TrainConsistManagementApp {
             this.capacity = capacity;
         }
 
-        public String getName() { return name; }
-
         @Override
         public String toString() {
-            return "Bogie{name='" + name + "', capacity=" + capacity + "}";
+            return name + " (" + capacity + " seats)";
         }
     }
 
     public static void main(String[] args) {
         System.out.println("==========================================");
-        System.out.println(" UC9 - Group Bogies by Type (groupingBy) ");
+        System.out.println(" UC10 - Count Total Seats (reduce) ");
         System.out.println("==========================================\n");
 
-        // 1. Create a list with multiple bogies of the same type
         List<Bogie> bogies = new ArrayList<>();
         bogies.add(new Bogie("Sleeper", 72));
         bogies.add(new Bogie("AC Chair", 56));
-        bogies.add(new Bogie("Sleeper", 72));
         bogies.add(new Bogie("First Class", 24));
-        bogies.add(new Bogie("AC Chair", 56));
+        bogies.add(new Bogie("General", 90));
 
-        System.out.println("Original Flat List of Bogies:");
+        System.out.println("Train Composition:");
         bogies.forEach(System.out::println);
 
-        // 2. Group bogies by their name using Collectors.groupingBy
-        Map<String, List<Bogie>> groupedBogies = groupBogiesByType(bogies);
+        // Functional Aggregation using map and reduce
+        int totalSeats = calculateTotalSeats(bogies);
 
-        // 3. Display the structured grouped result
-        System.out.println("\nGrouped Bogie Report:");
-        groupedBogies.forEach((type, list) -> {
-            System.out.println(type + ": " + list);
-        });
+        System.out.println("\n------------------------------------------");
+        System.out.println("Total Seating Capacity: " + totalSeats);
+        System.out.println("------------------------------------------");
 
-        System.out.println("\nUC9 grouping operations completed...");
+        System.out.println("\nUC10 aggregation completed...");
     }
 
-    // Helper method for logic and JUnit testing
-    public static Map<String, List<Bogie>> groupBogiesByType(List<Bogie> list) {
+    // Static method for logic and JUnit testing
+    public static int calculateTotalSeats(List<Bogie> list) {
         return list.stream()
-                .collect(Collectors.groupingBy(Bogie::getName));
+                .map(b -> b.capacity)           // Transform Bogie to Integer
+                .reduce(0, Integer::sum);       // Sum all integers, starting from 0
     }
 }
