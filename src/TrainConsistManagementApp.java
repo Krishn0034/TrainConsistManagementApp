@@ -1,52 +1,40 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.regex.Pattern;
 
 public class TrainConsistManagementApp {
 
-    // Bogie model class
-    static class Bogie {
-        String name;
-        int capacity;
+    // Regex Rules:
+    // Train ID: Starts with "TRN-", followed by exactly 4 digits
+    private static final String TRAIN_ID_REGEX = "^TRN-\\d{4}$";
 
-        Bogie(String name, int capacity) {
-            this.name = name;
-            this.capacity = capacity;
-        }
-
-        @Override
-        public String toString() {
-            return name + " (" + capacity + " seats)";
-        }
-    }
+    // Cargo Code: 3 uppercase letters, a hyphen, and 2 uppercase letters (e.g., PET-AB)
+    private static final String CARGO_CODE_REGEX = "^[A-Z]{3}-[A-Z]{2}$";
 
     public static void main(String[] args) {
         System.out.println("==========================================");
-        System.out.println(" UC10 - Count Total Seats (reduce) ");
+        System.out.println(" UC11 - Validate Train ID & Cargo Codes ");
         System.out.println("==========================================\n");
 
-        List<Bogie> bogies = new ArrayList<>();
-        bogies.add(new Bogie("Sleeper", 72));
-        bogies.add(new Bogie("AC Chair", 56));
-        bogies.add(new Bogie("First Class", 24));
-        bogies.add(new Bogie("General", 90));
+        // Sample Inputs
+        String trainID = "TRN-1234";
+        String cargoCode = "PET-AB";
 
-        System.out.println("Train Composition:");
-        bogies.forEach(System.out::println);
+        System.out.println("Validating Train ID: " + trainID + " -> " + isValidTrainID(trainID));
+        System.out.println("Validating Cargo Code: " + cargoCode + " -> " + isValidCargoCode(cargoCode));
 
-        // Functional Aggregation using map and reduce
-        int totalSeats = calculateTotalSeats(bogies);
+        // Invalid Examples
+        System.out.println("Validating Invalid ID: TRN-123 -> " + isValidTrainID("TRN-123"));
+        System.out.println("Validating Invalid Cargo: PET-ab -> " + isValidCargoCode("PET-ab"));
 
-        System.out.println("\n------------------------------------------");
-        System.out.println("Total Seating Capacity: " + totalSeats);
-        System.out.println("------------------------------------------");
-
-        System.out.println("\nUC10 aggregation completed...");
+        System.out.println("\nUC11 validation completed...");
     }
 
-    // Static method for logic and JUnit testing
-    public static int calculateTotalSeats(List<Bogie> list) {
-        return list.stream()
-                .map(b -> b.capacity)           // Transform Bogie to Integer
-                .reduce(0, Integer::sum);       // Sum all integers, starting from 0
+    // Logic for Train ID validation
+    public static boolean isValidTrainID(String id) {
+        return id != null && Pattern.matches(TRAIN_ID_REGEX, id);
+    }
+
+    // Logic for Cargo Code validation
+    public static boolean isValidCargoCode(String code) {
+        return code != null && Pattern.matches(CARGO_CODE_REGEX, code);
     }
 }
