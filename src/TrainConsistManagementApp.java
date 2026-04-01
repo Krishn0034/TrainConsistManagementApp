@@ -4,59 +4,64 @@ import java.util.stream.Collectors;
 
 public class TrainConsistManagementApp {
 
-    static class GoodsBogie {
+    static class Bogie {
         String id;
-        String shape; // "Cylindrical" or "Rectangular"
-        String cargo; // "Petroleum", "Chemicals", "Coal", "Grain"
+        int capacity;
 
-        GoodsBogie(String id, String shape, String cargo) {
+        Bogie(String id, int capacity) {
             this.id = id;
-            this.shape = shape;
-            this.cargo = cargo;
-        }
-
-        @Override
-        public String toString() {
-            return String.format("[%s | %s | %s]", id, shape, cargo);
+            this.capacity = capacity;
         }
     }
 
     public static void main(String[] args) {
         System.out.println("==========================================");
-        System.out.println(" UC12 - Safety Compliance Check (Goods) ");
+        System.out.println(" UC13 - Performance Comparison ");
         System.out.println("==========================================\n");
 
-        List<GoodsBogie> inventory = new ArrayList<>();
-        inventory.add(new GoodsBogie("GB-101", "Cylindrical", "Petroleum")); // Valid
-        inventory.add(new GoodsBogie("GB-102", "Rectangular", "Coal"));      // Valid
-        inventory.add(new GoodsBogie("GB-103", "Cylindrical", "Coal"));      // INVALID (Safety Risk)
-        inventory.add(new GoodsBogie("GB-104", "Rectangular", "Petroleum")); // INVALID (Leak Risk)
+        // 1. Prepare a large dataset (10,000 bogies)
+        List<Bogie> bogies = new ArrayList<>();
+        for (int i = 0; i < 10000; i++) {
+            bogies.add(new Bogie("B-" + i, (i % 100)));
+        }
 
-        System.out.println("Inventory Before Safety Check:");
-        inventory.forEach(System.out::println);
+        // 2. Measure Loop Performance
+        long startLoop = System.nanoTime();
+        List<Bogie> loopResult = filterWithLoop(bogies, 60);
+        long endLoop = System.nanoTime();
+        long loopDuration = endLoop - startLoop;
 
-        // Filter valid bogies based on business safety rules
-        List<GoodsBogie> safeBogies = inventory.stream()
-                .filter(TrainConsistManagementApp::isSafetyCompliant)
-                .collect(Collectors.toList());
+        // 3. Measure Stream Performance
+        long startStream = System.nanoTime();
+        List<Bogie> streamResult = filterWithStream(bogies, 60);
+        long endStream = System.nanoTime();
+        long streamDuration = endStream - startStream;
 
-        System.out.println("\nSafe & Compliant Bogies:");
-        safeBogies.forEach(System.out::println);
+        // 4. Display Results
+        System.out.println("Results Count (Loop): " + loopResult.size());
+        System.out.println("Results Count (Stream): " + streamResult.size());
+        System.out.println("\nExecution Time (Nanoseconds):");
+        System.out.println("Traditional Loop: " + loopDuration + " ns");
+        System.out.println("Java Streams    : " + streamDuration + " ns");
 
-        System.out.println("\nUC12 safety validation completed...");
+        System.out.println("\nConclusion: " + (loopDuration < streamDuration ? "Loop was faster." : "Stream was faster."));
     }
 
-    /**
-     * Business Rule:
-     * 1. Cylindrical bogies MUST carry liquids (Petroleum/Chemicals).
-     * 2. Rectangular bogies MUST carry solids (Coal/Grain).
-     */
-    public static boolean isSafetyCompliant(GoodsBogie bogie) {
-        if (bogie.shape.equalsIgnoreCase("Cylindrical")) {
-            return bogie.cargo.equals("Petroleum") || bogie.cargo.equals("Chemicals");
-        } else if (bogie.shape.equalsIgnoreCase("Rectangular")) {
-            return bogie.cargo.equals("Coal") || bogie.cargo.equals("Grain");
+    // Logic for Loop Filtering
+    public static List<Bogie> filterWithLoop(List<Bogie> list, int threshold) {
+        List<Bogie> result = new ArrayList<>();
+        for (Bogie b : list) {
+            if (b.capacity > threshold) {
+                result.add(b);
+            }
         }
-        return false;
+        return result;
+    }
+
+    // Logic for Stream Filtering
+    public static List<Bogie> filterWithStream(List<Bogie> list, int threshold) {
+        return list.stream()
+                .filter(b -> b.capacity > threshold)
+                .collect(Collectors.toList());
     }
 }
