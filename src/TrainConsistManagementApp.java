@@ -1,53 +1,60 @@
-// Custom Runtime Exception for safety violations
-class SafetyViolationException extends Exception {
-    public SafetyViolationException(String message) {
-        super(message);
-    }
-}
+import java.util.ArrayList;
+import java.util.List;
 
 public class TrainConsistManagementApp {
 
-    static class GoodsBogie {
-        String id;
-        String shape;
-        String currentCargo = "Empty";
+    static class Bogie {
+        String name;
+        int capacity;
 
-        GoodsBogie(String id, String shape) {
-            this.id = id;
-            this.shape = shape;
+        Bogie(String name, int capacity) {
+            this.name = name;
+            this.capacity = capacity;
         }
 
-        // Method that validates safety at runtime
-        public void assignCargo(String cargo) throws SafetyViolationException {
-            System.out.println("[System] Attempting to assign " + cargo + " to " + id + " (" + shape + ")...");
-
-            if (shape.equals("Rectangular") && cargo.equals("Petroleum")) {
-                throw new SafetyViolationException("CRITICAL: Rectangular bogies cannot carry liquid Petroleum!");
-            }
-
-            this.currentCargo = cargo;
-            System.out.println("[System] Cargo assigned successfully.");
+        @Override
+        public String toString() {
+            return name + " (" + capacity + ")";
         }
     }
 
     public static void main(String[] args) {
         System.out.println("==========================================");
-        System.out.println(" UC15 - try-catch-finally Safety Check ");
+        System.out.println(" UC16 - Manual Bubble Sort Implementation ");
         System.out.println("==========================================\n");
 
-        GoodsBogie bogie = new GoodsBogie("GB-505", "Rectangular");
+        List<Bogie> bogies = new ArrayList<>();
+        bogies.add(new Bogie("Sleeper", 72));
+        bogies.add(new Bogie("First Class", 24));
+        bogies.add(new Bogie("General", 90));
+        bogies.add(new Bogie("AC Chair", 56));
 
-        try {
-            // This will trigger the exception
-            bogie.assignCargo("Petroleum");
-        } catch (SafetyViolationException e) {
-            System.err.println("[Error] Safety Policy Violated: " + e.getMessage());
-        } finally {
-            // This runs NO MATTER WHAT (success or failure)
-            System.out.println("[Finally] Closing assignment logs and updating database status...");
-            System.out.println("[Status] Current Cargo State: " + bogie.currentCargo);
+        System.out.println("Before Manual Sorting:");
+        bogies.forEach(System.out::println);
+
+        // Perform Bubble Sort
+        bubbleSort(bogies);
+
+        System.out.println("\nAfter Bubble Sort (Ascending Capacity):");
+        bogies.forEach(System.out::println);
+    }
+
+    /**
+     * Manual Bubble Sort Algorithm
+     * Time Complexity: O(n^2)
+     */
+    public static void bubbleSort(List<Bogie> list) {
+        int n = list.size();
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = 0; j < n - i - 1; j++) {
+                // Compare adjacent bogie capacities
+                if (list.get(j).capacity > list.get(j + 1).capacity) {
+                    // Swap the bogies
+                    Bogie temp = list.get(j);
+                    list.set(j, list.get(j + 1));
+                    list.set(j + 1, temp);
+                }
+            }
         }
-
-        System.out.println("\nUC15 structured handling completed...");
     }
 }
