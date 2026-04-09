@@ -1,41 +1,40 @@
-import java.util.Arrays;
-
 public class TrainConsistManagementApp {
 
     public static void main(String[] args) {
         System.out.println("==========================================");
-        System.out.println(" UC17 - Alphabetical Sort (Arrays.sort) ");
+        System.out.println(" UC18 - Linear Search for Bogie ID ");
         System.out.println("==========================================\n");
 
-        // 1. Create an array of bogie names
-        String[] bogieNames = {
-                "Sleeper",
-                "AC Chair",
-                "First Class",
-                "General",
-                "Cylindrical",
-                "Rectangular"
-        };
+        // 1. Unsorted list of IDs in the consist
+        String[] consistIds = {"B-105", "B-202", "B-707", "B-303", "B-909"};
+        String targetId = "B-707";
 
-        System.out.println("Before Sorting:");
-        System.out.println(Arrays.toString(bogieNames));
+        System.out.println("Consist IDs: " + java.util.Arrays.toString(consistIds));
+        System.out.println("Searching for: " + targetId);
 
-        // 2. Use Java's built-in Dual-Pivot Quicksort
-        sortBogieNames(bogieNames);
+        // 2. Perform Linear Search
+        int resultIndex = findBogieIndex(consistIds, targetId);
 
-        System.out.println("\nAfter Alphabetical Sorting:");
-        System.out.println(Arrays.toString(bogieNames));
-
-        System.out.println("\nUC17 sorting completed...");
+        if (resultIndex != -1) {
+            System.out.println("\nSUCCESS: Bogie found at position: " + resultIndex);
+        } else {
+            System.out.println("\nFAILURE: Bogie " + targetId + " not found in consist.");
+        }
     }
 
     /**
-     * Sorts the provided array of names alphabetically.
-     * Efficiency: O(n log n)
+     * Linear Search Implementation
+     * Checks each element sequentially.
+     * Time Complexity: O(n)
      */
-    public static void sortBogieNames(String[] names) {
-        if (names != null) {
-            Arrays.sort(names);
+    public static int findBogieIndex(String[] array, String target) {
+        if (array == null || target == null) return -1;
+
+        for (int i = 0; i < array.length; i++) {
+            if (array[i].equals(target)) {
+                return i; // Target found, return the index
+            }
         }
+        return -1; // Target not found
     }
 }
