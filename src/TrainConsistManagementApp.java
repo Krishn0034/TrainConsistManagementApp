@@ -1,40 +1,51 @@
+import java.util.Arrays;
+
 public class TrainConsistManagementApp {
 
     public static void main(String[] args) {
         System.out.println("==========================================");
-        System.out.println(" UC18 - Linear Search for Bogie ID ");
+        System.out.println(" UC19 - Binary Search (Optimized) ");
         System.out.println("==========================================\n");
 
-        // 1. Unsorted list of IDs in the consist
-        String[] consistIds = {"B-105", "B-202", "B-707", "B-303", "B-909"};
+        // 1. Dataset must be SORTED for Binary Search to work
+        String[] consistIds = {"B-909", "B-105", "B-707", "B-202", "B-303"};
+        Arrays.sort(consistIds);
+
         String targetId = "B-707";
 
-        System.out.println("Consist IDs: " + java.util.Arrays.toString(consistIds));
+        System.out.println("Sorted Consist IDs: " + Arrays.toString(consistIds));
         System.out.println("Searching for: " + targetId);
 
-        // 2. Perform Linear Search
-        int resultIndex = findBogieIndex(consistIds, targetId);
+        // 2. Perform Binary Search
+        int resultIndex = binarySearchBogie(consistIds, targetId);
 
         if (resultIndex != -1) {
-            System.out.println("\nSUCCESS: Bogie found at position: " + resultIndex);
+            System.out.println("\nSUCCESS: Bogie found at sorted index: " + resultIndex);
         } else {
-            System.out.println("\nFAILURE: Bogie " + targetId + " not found in consist.");
+            System.out.println("\nFAILURE: Bogie " + targetId + " not found.");
         }
     }
 
     /**
-     * Linear Search Implementation
-     * Checks each element sequentially.
-     * Time Complexity: O(n)
+     * Binary Search Implementation (Divide and Conquer)
+     * Time Complexity: O(log n)
      */
-    public static int findBogieIndex(String[] array, String target) {
-        if (array == null || target == null) return -1;
+    public static int binarySearchBogie(String[] array, String target) {
+        int low = 0;
+        int high = array.length - 1;
 
-        for (int i = 0; i < array.length; i++) {
-            if (array[i].equals(target)) {
-                return i; // Target found, return the index
+        while (low <= high) {
+            int mid = low + (high - low) / 2;
+            int comparison = array[mid].compareTo(target);
+
+            if (comparison == 0) {
+                return mid; // Found!
+            } else if (comparison < 0) {
+                low = mid + 1; // Target is in the right half
+            } else {
+                high = mid - 1; // Target is in the left half
             }
         }
-        return -1; // Target not found
+        return -1; // Not found
     }
 }
