@@ -1,51 +1,47 @@
-import java.util.Arrays;
+class EmptyConsistException extends Exception {
+    public EmptyConsistException(String message) {
+        super(message);
+    }
+}
 
 public class TrainConsistManagementApp {
 
     public static void main(String[] args) {
         System.out.println("==========================================");
-        System.out.println(" UC19 - Binary Search (Optimized) ");
+        System.out.println(" UC20 - Fail-Fast Search Validation ");
         System.out.println("==========================================\n");
 
-        // 1. Dataset must be SORTED for Binary Search to work
-        String[] consistIds = {"B-909", "B-105", "B-707", "B-202", "B-303"};
-        Arrays.sort(consistIds);
+        // Scenario: Empty train consist
+        String[] emptyConsist = {};
+        String targetId = "B-101";
 
-        String targetId = "B-707";
-
-        System.out.println("Sorted Consist IDs: " + Arrays.toString(consistIds));
-        System.out.println("Searching for: " + targetId);
-
-        // 2. Perform Binary Search
-        int resultIndex = binarySearchBogie(consistIds, targetId);
-
-        if (resultIndex != -1) {
-            System.out.println("\nSUCCESS: Bogie found at sorted index: " + resultIndex);
-        } else {
-            System.out.println("\nFAILURE: Bogie " + targetId + " not found.");
+        try {
+            System.out.println("[System] Initiating search for " + targetId + "...");
+            int index = secureSearch(emptyConsist, targetId);
+            System.out.println("Result: Found at index " + index);
+        } catch (EmptyConsistException e) {
+            System.err.println("[Critical Error] " + e.getMessage());
+        } finally {
+            System.out.println("[System] Search operation lifecycle ended.");
         }
     }
 
     /**
-     * Binary Search Implementation (Divide and Conquer)
-     * Time Complexity: O(log n)
+     * Performs a search but validates the state of the array first.
+     * Throws EmptyConsistException if the array is null or empty.
      */
-    public static int binarySearchBogie(String[] array, String target) {
-        int low = 0;
-        int high = array.length - 1;
+    public static int secureSearch(String[] array, String target) throws EmptyConsistException {
+        // Fail-Fast Validation
+        if (array == null || array.length == 0) {
+            throw new EmptyConsistException("Search aborted: The train consist is empty!");
+        }
 
-        while (low <= high) {
-            int mid = low + (high - low) / 2;
-            int comparison = array[mid].compareTo(target);
-
-            if (comparison == 0) {
-                return mid; // Found!
-            } else if (comparison < 0) {
-                low = mid + 1; // Target is in the right half
-            } else {
-                high = mid - 1; // Target is in the left half
+        // Standard Linear Search logic (from UC18)
+        for (int i = 0; i < array.length; i++) {
+            if (array[i].equals(target)) {
+                return i;
             }
         }
-        return -1; // Not found
+        return -1;
     }
 }
