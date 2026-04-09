@@ -1,60 +1,41 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 public class TrainConsistManagementApp {
 
-    static class Bogie {
-        String name;
-        int capacity;
-
-        Bogie(String name, int capacity) {
-            this.name = name;
-            this.capacity = capacity;
-        }
-
-        @Override
-        public String toString() {
-            return name + " (" + capacity + ")";
-        }
-    }
-
     public static void main(String[] args) {
         System.out.println("==========================================");
-        System.out.println(" UC16 - Manual Bubble Sort Implementation ");
+        System.out.println(" UC17 - Alphabetical Sort (Arrays.sort) ");
         System.out.println("==========================================\n");
 
-        List<Bogie> bogies = new ArrayList<>();
-        bogies.add(new Bogie("Sleeper", 72));
-        bogies.add(new Bogie("First Class", 24));
-        bogies.add(new Bogie("General", 90));
-        bogies.add(new Bogie("AC Chair", 56));
+        // 1. Create an array of bogie names
+        String[] bogieNames = {
+                "Sleeper",
+                "AC Chair",
+                "First Class",
+                "General",
+                "Cylindrical",
+                "Rectangular"
+        };
 
-        System.out.println("Before Manual Sorting:");
-        bogies.forEach(System.out::println);
+        System.out.println("Before Sorting:");
+        System.out.println(Arrays.toString(bogieNames));
 
-        // Perform Bubble Sort
-        bubbleSort(bogies);
+        // 2. Use Java's built-in Dual-Pivot Quicksort
+        sortBogieNames(bogieNames);
 
-        System.out.println("\nAfter Bubble Sort (Ascending Capacity):");
-        bogies.forEach(System.out::println);
+        System.out.println("\nAfter Alphabetical Sorting:");
+        System.out.println(Arrays.toString(bogieNames));
+
+        System.out.println("\nUC17 sorting completed...");
     }
 
     /**
-     * Manual Bubble Sort Algorithm
-     * Time Complexity: O(n^2)
+     * Sorts the provided array of names alphabetically.
+     * Efficiency: O(n log n)
      */
-    public static void bubbleSort(List<Bogie> list) {
-        int n = list.size();
-        for (int i = 0; i < n - 1; i++) {
-            for (int j = 0; j < n - i - 1; j++) {
-                // Compare adjacent bogie capacities
-                if (list.get(j).capacity > list.get(j + 1).capacity) {
-                    // Swap the bogies
-                    Bogie temp = list.get(j);
-                    list.set(j, list.get(j + 1));
-                    list.set(j + 1, temp);
-                }
-            }
+    public static void sortBogieNames(String[] names) {
+        if (names != null) {
+            Arrays.sort(names);
         }
     }
 }
